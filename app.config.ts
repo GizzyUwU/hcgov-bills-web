@@ -4,9 +4,6 @@ export default defineConfig({
   vite: {
     optimizeDeps: {
       exclude: ["solid-icons"],
-    },
-    build: {
-        minify: true
     }
   }
 });
