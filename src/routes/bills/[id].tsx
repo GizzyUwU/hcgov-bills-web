@@ -8,7 +8,12 @@ import {
 import { useParams } from "@solidjs/router";
 
 async function fetchBills() {
-    const res = await fetch("http://127.0.0.1:3000/bills-and-propositions");
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        const res = await fetch("http://127.0.0.1:3001/bills-and-propositions");
+        if (!res.ok) throw new Error("Failed to fetch bills");
+        return res.json();
+    }
+    const res = await fetch("https://govlib.avcap.xyz/bills-and-propositions");
     if (!res.ok) throw new Error("Failed to fetch bills");
     return res.json();
 }
