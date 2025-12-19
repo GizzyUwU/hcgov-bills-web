@@ -28,6 +28,7 @@ type Field = {
 export default function Bills_Propositions() {
   const [sortOrder, setSortOrder] = createSignal<"new" | "old">("new");
   const [bills] = createResource(fetchBills);
+  const [itemsToShow, setItemsToShow] = createSignal(100);
 
   const sections = [
     { title: "Open for Voting", status: "in_progress" },
@@ -47,12 +48,25 @@ export default function Bills_Propositions() {
     clearTimeout(debounceTimer);
     debounceTimer = window.setTimeout(() => {
       setDebouncedSearch(value.toLowerCase().trim());
-    }, 300);
+    }, 200);
   };
 
   onMount(() => {
     const params = new URLSearchParams(window.location.search);
     setSortOrder(params.get("sort") === "old" ? "old" : "new")
+    const onScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 300
+      ) {
+        setItemsToShow((prev) => prev + 100);
+      }
+    };
+    window.addEventListener("scroll", onScroll);
+    onCleanup(() => {
+      window.removeEventListener("scroll", onScroll);
+      clearTimeout(debounceTimer);
+    });
   })
 
   onCleanup(() => clearTimeout(debounceTimer));
@@ -144,13 +158,17 @@ export default function Bills_Propositions() {
               });
             });
 
+            const displayed = createMemo(() =>
+              filtered().slice(0, itemsToShow())
+            );
+
             return (
               <Show when={filtered().length > 0}>
                 <h1 class="govuk-heading-m">
                   {section.title}
                 </h1>
                 <ul class="govuk-list">
-                  <For each={filtered().slice().sort((a, b) => {
+                  <For each={displayed().slice().sort((a, b) => {
                     const dateA = new Date(a.date_created).getTime();
                     const dateB = new Date(b.date_created).getTime();
                     return sortOrder() === "old" ? dateA - dateB : dateB - dateA;

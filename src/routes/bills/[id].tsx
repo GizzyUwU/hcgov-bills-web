@@ -8,14 +8,14 @@ import {
 import { useParams } from "@solidjs/router";
 
 async function fetchBills() {
-  if (import.meta.env?.DEV) {
-    const res = await fetch("http://127.0.0.1:3000/bills-and-propositions");
+    if (import.meta.env?.DEV) {
+        const res = await fetch("http://127.0.0.1:3000/bills-and-propositions");
+        if (!res.ok) throw new Error("Failed to fetch bills");
+        return res.json();
+    }
+    const res = await fetch("https://govlib.avcap.xyz/bills-and-propositions");
     if (!res.ok) throw new Error("Failed to fetch bills");
     return res.json();
-  }
-  const res = await fetch("https://govlib.avcap.xyz/bills-and-propositions");
-  if (!res.ok) throw new Error("Failed to fetch bills");
-  return res.json();
 }
 
 interface RichTextElement {
@@ -88,6 +88,18 @@ export default function Bills_Propositions() {
         const value = statusField?.value;
         return status.find(s => s.status === value) ?? { color: "", text: "" };
     });
+
+    const titleRichText = createMemo(() => {
+        const titleFieldVal = titleField()?.rich_text ?? [];
+        return renderRichText(titleFieldVal)
+    })
+
+    const descriptionRichText = createMemo(() => {
+        const desc = bill()?.fields?.find(f => f.key === "description");
+        const data = renderRichText(desc?.rich_text ?? []);
+        return data;
+    });
+
     return (
         <Show when={bill() && billStatus()}>
             <div class="govuk-grid-column-two-thirds">
@@ -95,12 +107,10 @@ export default function Bills_Propositions() {
                 <h1 class="govuk-heading-l" style={{
                     "margin-bottom": "0.25rem",
                 }}>
-                    <For each={titleField()?.rich_text ?? []}>
-                        {(richElement) => <>{renderRichText([richElement])}</>}
-                    </For>
+                    {titleRichText()}
                 </h1>
                 <span class="govuk-caption-m">
-                    {bills()?.users[bill()!.created_by] ?? bill()!.created_by} - {new Date(bill()!.date_created * 1000).toLocaleString("en-GB", {
+                    Created at {new Date(bill()!.date_created * 1000).toLocaleString("en-GB", {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
@@ -120,15 +130,9 @@ export default function Bills_Propositions() {
                     >
                         This bill {billStatus().text}
                     </div>
-                    <For each={bill()?.fields?.filter(f => f.key !== "name") ?? []}>
-                        {(field) => (
-                            <div class="govuk-body">
-                                <For each={field.rich_text ?? []}>
-                                    {(richElement) => <>{renderRichText([richElement])}</>}
-                                </For>
-                            </div>
-                        )}
-                    </For>
+                    <div class="govuk-body">{descriptionRichText()}</div>
+                    <span class="govuk-caption-m">Created by</span>
+                    <h1 class="govuk-heading-m">{bills()?.users[bill()!.created_by] ?? bill()!.created_by}</h1>
                     <Show when={(bill()?.fields?.find(f => f.key === "assignee")?.user?.length ?? 0) > 0}>
                         <h2 class="govuk-heading-m">Sponsors of this bill</h2>
                         <For each={bill()?.fields?.filter(f => f.key === "assignee") ?? []}>
