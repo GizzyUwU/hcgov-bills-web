@@ -1,0 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+main {
+  min-height: 100vh;
+}
+
+.no-highlight:focus,
+.no-highlight:active {
+  background-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
