@@ -8,9 +8,9 @@ export default function Fallback() {
         "text-align": "center",
       }}
     >
-      <img src="/hc.svg" height="128px" />
+      <img src="/hc.svg" height="64px" />
       <br />
-      <h1 class="govuk-heading-l">Loading...</h1>
+      <h1 class="govuk-heading-m">Loading...</h1>
     </div>
   );
 }

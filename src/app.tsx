@@ -4,7 +4,7 @@ import { FileRoutes } from "@solidjs/start/router";
 import { Suspense } from "solid-js";
 import "./app.css"
 import "../node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.css";
-import { FaSolidScaleBalanced } from 'solid-icons/fa'
+import Fa7SolidBalanceScale from '~icons/fa7-solid/balance-scale';
 import Fallback from "./routes/fallback";
 
 export default function App() {
@@ -39,31 +39,8 @@ export default function App() {
             </div>
           </header>
           <div class="govuk-width-container">
-            <main class="govuk-main-wrapper">
-              <div class="govuk-grid-row">
                 <Suspense fallback={<Fallback />}>{props.children}</Suspense>
-              </div>
-            </main>
           </div>
-          <footer class="govuk-footer" >
-            <div class="govuk-width-container">
-              <FaSolidScaleBalanced size="32" class="govuk-footer__crown" />
-              <div class="govuk-footer__meta">
-                <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
-                  <span class="govuk-footer__licence-description">
-                    All content is available under the {" "}
-                    <a
-                      class="govuk-footer__link"
-                      href="https://github.com/GizzyUwU/hcgov-bills-web/blob/main/LICENSE"
-                      rel="license">MIT License</a>, except where otherwise stated
-                  </span>
-                </div>
-                <div class="govuk-footer__meta-item">
-                  © Copyright of Hack Club Government
-                </div>
-              </div>
-            </div>
-          </footer>
         </MetaProvider>
       )}
     >

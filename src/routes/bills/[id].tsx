@@ -8,7 +8,7 @@ import {
 import { useParams } from "@solidjs/router";
 
 async function fetchBills() {
-    if (import.meta.env?.DEV) {
+    if (!import.meta.env?.DEV) {
         const res = await fetch("http://127.0.0.1:3000/bills-and-propositions");
         if (!res.ok) throw new Error("Failed to fetch bills");
         return res.json();

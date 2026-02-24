@@ -7,10 +7,10 @@ import {
   onCleanup,
   onMount,
 } from "solid-js";
-import { FaSolidMagnifyingGlass } from "solid-icons/fa";
+import Fa7SolidMagnifyingGlass from '~icons/fa7-solid/magnifying-glass';
 
 async function fetchBills() {
-  if (import.meta.env?.DEV) {
+  if (!import.meta.env?.DEV) {
     const res = await fetch("http://127.0.0.1:3000/bills-and-propositions");
     if (!res.ok) throw new Error("Failed to fetch bills");
     return res.json();
@@ -89,9 +89,9 @@ export default function Bills_Propositions() {
   }
 
   return (
-    <div class="govuk-grid-column-two-thirds">
+    <main class="govuk-main-wrapper">
       <h1 class="govuk-heading-l">Bills/Propositions</h1>
-      <p class="govuk-body" style="width: 100%; white-space: nowrap;">
+      <p class="govuk-body govuk-!-text-break-word">
         {sortOrder() === "old"
           ? "These bills/propositions are sorted by oldest to newest. "
           : "These bills/propositions are sorted by newest to oldest. "}
@@ -133,7 +133,7 @@ export default function Bills_Propositions() {
               setDebouncedSearch(searchInput().toLowerCase().trim());
             }}
           >
-            <FaSolidMagnifyingGlass color="white" />
+            <Fa7SolidMagnifyingGlass color="white" />
           </div>
         </div>
         <p class="govuk-body-s" style={{ "padding-top": "4px" }}>
@@ -200,6 +200,6 @@ export default function Bills_Propositions() {
           }}
         </For>
       </div>
-    </div>
+    </main>
   );
 }
